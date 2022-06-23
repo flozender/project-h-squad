@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <title>Portfolio Template</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta property="og:title" content="Personal Portfolio" />
+    <meta property="og:description" content="My Personal Portfolio" />
+    <meta property="og:url" content="{{ url }}" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet" />
+
+    <link lang="sass" rel="stylesheet" href="./static/styles/main.css" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+    <style type="text/css">
+        .fa_custom {
+            color: #0099cc;
+        }
+    </style>
+
+    <link rel="icon" href="./static/img/favicon.ico" type="image/x-icon" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+</head>
+
+<body>
+    <!-- transparent black div to overlay the background -->
+    <div class="overlay"></div>
+    <!-- transparent black div to overlay the background -->
+
+    <!-- menu_bar -->
+    <header class="nav-bar">
+        <ul class="nav-content">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/aboutMe">About Me</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/experience">Experience</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/education">Education</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/hobbies">Hobbies</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/travel">My Travels</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" style="color: rgba(255, 255, 255, 0.55)" href="/timeline">Timeline</a>
+            </li>
+        </ul>
+    </header>
+    <!-- menu_bar -->
+
+    <div class="travel-div">
+        <div class="travel_header">
+            <h1 class="th1">Timeline</h1>
+            <span class="headerLine"></span>
+            <p class="thp">Please fill in the form below to add a timeline post.</p>
+        </div>
+
+        <div id="timeline">
+            <form id="form">
+                <label class="text-white" for="name">Name:</label><br>
+                <input type="text" id="name" name="name"><br>
+                <label class="text-white" for="email">Email:</label><br>
+                <input type="email" id="email" name="email"><br>
+                <label class="text-white" for="email">Content:</label><br>
+                <textarea id="content" name="content"></textarea><br><br>
+                <input type="submit" value="Submit">
+            </form>
+            <br><br>
+            <div id="timeline_posts">
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    const refreshEntries = () => {
+        const postDiv = document.getElementById("timeline_posts");
+        fetch('/api/timeline_post', {
+            method: 'GET',
+        })
+            .then(res => res.json())
+            .then(data => {
+                const elements = data.timeline_posts.map(post => {
+                    return `<div class='text-white'>
+                        #${post.id} - ${post.created_at}<br>
+                        <b>Name: </b> ${post.name}<br>
+                        <b>Email: </b> ${post.email}<br>
+                        <b>Content: </b> ${post.content}<br>
+                    </div><br>`;
+                });
+                postDiv.innerHTML = elements;
+            })
+    }
+
+    window.onload = () => {
+        refreshEntries();
+        const form = document.getElementById('form');
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const payload = new FormData(form);
+            fetch('/api/timeline_post', {
+                method: 'POST',
+                body: payload,
+            })
+                .then(res => res.json())
+                .then(data => refreshEntries())
+            form.reset();
+        });
+    }
+
+</script>
+
+</html>

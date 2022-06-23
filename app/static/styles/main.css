@@ -387,3 +387,17 @@ li a:hover {
 
   background-color: rgba(6, 7, 5, 0.503);
 }
+
+#timeline {
+  height: 75%;
+  min-height: 75%;
+  width: 50vw;
+  background-color: rgba(6, 7, 5, 0.503);
+  padding: 2%;
+  overflow-y: scroll;
+}
+
+.text-white {
+  color: white;
+}
+
